@@ -8,12 +8,14 @@ Algoritmo "caixa"
 // Data atual  : 11/05/2026
 Var
 // Seção de Declarações das variáveis 
-opcao, decisao, cont, contar, ven,ococobranca, reset: inteiro
+linha, coluna, opcao, decisao, cont, contar, ven, ococobranca, reset: inteiro
 entregue, restante, ssaldo, dsaldo,msaldo,csaldo,psaldo, total: real
 fecha: logico
 produtos: vetor[0..15] de caractere
 precos: vetor[0..15] de real
 venda: vetor[1..99] de inteiro
+historico: vetor[0..10,0..10] de caractere
+histvalor: vetor[0..10, 0..4] de real
 Inicio
 // Seção de Comandos, procedimento, funções, operadores, etc... 
 ssaldo <- 80.00  //Saldo inicial do caixa em dinheiro
@@ -21,6 +23,7 @@ fecha <- verdadeiro
 dsaldo <- 0
 csaldo <- 0
 psaldo <- 0
+coluna <- 0
 
 produtos[1] <- "Arroz camilo"
 precos[1] <- 20
@@ -88,9 +91,19 @@ escreval("|_________________________________________________|")
 repita
 cont <- cont + 1
 leia (ven)
+
+se (ven >= 0) e (ven <= 15) entao
 venda[cont] <- ven
 total <- total + precos[venda[cont]]
+historico[coluna, cont] <- produtos[venda[cont]]
+histvalor[coluna] <- total
+senao entao
+escreval ("Este produto não existe")
+cont <- cont -1
+fimse
 ate ven = 0
+
+
 
 contar <- 1
 escreval(" _________________________________________________")
@@ -109,7 +122,7 @@ fimse
 
 escreval(" _________________________________________________")
 escreval("|                                                 |")
-escreval("|         1-Continuar   2-Adicionar Mais          |")
+escreval("|        1-Continuar      2-Adicionar Mais        |")
 escreval("|_________________________________________________|")
 leia (opcao)
 ate opcao <> 2
@@ -146,7 +159,7 @@ fimse
 se restante > 0 entao
 ssaldo <- ssaldo - restante
 fimse
-
+histvalor[coluna, 1] <- entregue
 
 caso 2
 //Débito
@@ -167,7 +180,7 @@ escreval("")
 escreval ("Faltam", (-1 * restante), " reais, finalizar com qual metodo?")
 total <- restante * -1
 fimse
-
+histvalor[coluna, 2] <- entregue
 
 caso 3
 //Crédito
@@ -189,7 +202,7 @@ escreval("")
 escreval ("Faltam", (-1 * restante), " reais, finalizar com qual metodo?")
 total <- restante * -1
 fimse
-
+histvalor[coluna, 3] <- entregue
 caso 4
 //PIX
 escreval (" Total: R$", total)
@@ -209,18 +222,23 @@ escreval("")
 escreval ("Faltam", (-1 * restante), " reais, finalizar com qual metodo?")
 total <- restante * -1
 fimse
-
+histvalor[coluna, 4] <- entregue
 outrocaso
 escreval ("Meio de pagamento invalido!")
 
 fimescolha
 ate restante >= 0
+coluna <- coluna + 1
 fimse
 fecha <- verdadeiro
    
 caso 2
 //Historico
-
+para contar de 0 ate 10 faca
+para cont de 0 ate 10 faca
+escreva (historico [contar,cont], " ")
+fimpara
+fimpara
 
 caso 3
 //Fechamento
@@ -234,7 +252,7 @@ escreval("|     Total:  R$", msaldo + ssaldo)
 escreval("|_________________________________________________|")
 
 escreval(" _________________________________________________")
-escreval("|Concluir?                                        |")
+escreval("|Concluir Fechamento?                             |")
 escreval("|         1 - Concluir      2 - Voltar            |")
 escreval("|_________________________________________________|")
 leia(opcao)
